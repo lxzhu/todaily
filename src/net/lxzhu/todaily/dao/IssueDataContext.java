@@ -80,7 +80,7 @@ public class IssueDataContext extends SqlDataContext {
 	protected void update(Issue issue) {
 		try {
 			issue.setUpdateDateTime(Calendar.getInstance());
-			String sql = "update " + IssueScriptObject.TABLE_NAME + "set title=?," + " description=?,"
+			String sql = "update " + IssueScriptObject.TABLE_NAME + " set title=?," + " description=?,"
 					+ " important_level=?," + " update_date_time=?" + "where _id=?";
 
 			this.sqlite.getWritableDatabase().execSQL(

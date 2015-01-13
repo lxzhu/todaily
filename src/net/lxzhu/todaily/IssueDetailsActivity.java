@@ -3,18 +3,20 @@
  */
 package net.lxzhu.todaily;
 
+import java.util.ArrayList;
+
 import net.lxzhu.todaily.dao.Issue;
 import net.lxzhu.todaily.dao.IssueDataContext;
+import net.lxzhu.todaily.util.ToastUtil;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 /**
@@ -22,6 +24,8 @@ import android.widget.Toast;
  *
  */
 public class IssueDetailsActivity extends Activity {
+
+	public static final String sExtraDataKeyIssueId = "issueid";
 
 	protected View basicFrame;
 	protected View descriptionFrame;
@@ -32,6 +36,7 @@ public class IssueDetailsActivity extends Activity {
 	protected EditText titleText;
 	protected EditText descriptionText;
 	protected long issueId;
+	protected Spinner importantLevelDropDownList;
 
 	public void onCreate(Bundle savedInstanceState) {
 		this.setContentView(R.layout.activity_issue_detail);
@@ -39,11 +44,13 @@ public class IssueDetailsActivity extends Activity {
 		this.findViews();
 		this.setupBasicButton();
 		this.setupDescriptionButton();
+		this.setupImportantLevels();
 		this.setupSaveButton();
 		this.setupCancelButton();
 		this.getActionBar().setHomeButtonEnabled(true);
 		this.getActionBar().setIcon(R.drawable.aves_arrow_left_48);
 		this.getActionBar().setTitle("任务详情");
+		this.bindIssueToUI();
 	}
 
 	protected void findViews() {
@@ -55,6 +62,7 @@ public class IssueDetailsActivity extends Activity {
 		this.cancelButton = (ImageButton) this.findViewById(R.id.activity_issue_detail_cancel_button);
 		this.titleText = (EditText) this.findViewById(R.id.activity_issue_detail_title);
 		this.descriptionText = (EditText) this.findViewById(R.id.activity_issue_detail_description);
+		this.importantLevelDropDownList = (Spinner) this.findViewById(R.id.activity_issue_detail_important_level);
 	}
 
 	private void setupBasicButton() {
@@ -116,11 +124,41 @@ public class IssueDetailsActivity extends Activity {
 		return true;
 	}
 
+	private void bindIssueToUI() {
+		try {
+			Bundle extraBundle = this.getIntent().getExtras();
+
+			if (extraBundle != null && extraBundle.containsKey(sExtraDataKeyIssueId)) {
+				long issueId = extraBundle.getLong(sExtraDataKeyIssueId);
+				IssueDataContext dc = new IssueDataContext(this.getApplicationContext());
+				Issue issue = dc.find(issueId);
+				if (issue == null) {
+					ToastUtil.showText(this, "failed to load specified issue");
+					this.finish();
+				} else {
+					bindIssueToUI(issue);
+				}
+			}
+		} catch (Exception e) {
+			ToastUtil.showText(this, e.getLocalizedMessage());
+			e.printStackTrace();
+		}
+	}
+
+	private void bindIssueToUI(Issue issue) {
+		this.issueId = issue.getId();
+		this.titleText.setText(issue.getTitle());
+		this.descriptionText.setText(issue.getDescription());
+		this.importantLevelDropDownList.setSelection(issue.getImportantLevel() - 1);
+	}
+
 	private Issue collectIssueData() {
 		Issue issue = new Issue();
 		issue.setId(issueId);
 		issue.setTitle(this.titleText.getText().toString());
 		issue.setDescription(this.descriptionText.getText().toString());
+		DropDownItem level = (DropDownItem) this.importantLevelDropDownList.getSelectedItem();
+		issue.setImportantLevel(level.getValue());
 		return issue;
 	}
 
@@ -131,5 +169,19 @@ public class IssueDetailsActivity extends Activity {
 			break;
 		}
 		return true;
+	}
+
+	private void setupImportantLevels() {
+		ArrayList<DropDownItemBase> items = new ArrayList<DropDownItemBase>();
+		items.add(new DropDownItemBase(1, "年度"));
+		items.add(new DropDownItemBase(2, "季度"));
+		items.add(new DropDownItemBase(3, "月度"));
+		items.add(new DropDownItemBase(4, "周度"));
+		items.add(new DropDownItemBase(5, "天度"));
+		items.add(new DropDownItemBase(6, "时度"));
+		items.add(new DropDownItemBase(7, "分度"));
+		DropDownListAdapter<DropDownItemBase> adapter = new DropDownListAdapter<DropDownItemBase>(this, items);
+		this.importantLevelDropDownList.setAdapter(adapter);
+
 	}
 }

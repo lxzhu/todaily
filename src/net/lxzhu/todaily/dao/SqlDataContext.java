@@ -21,11 +21,17 @@ public class SqlDataContext {
 	protected <T> T fetchFirst(String sql, Object[] args, DataBinder<T> binder) {
 
 		String[] texts = new Linq<Object>(args).select(new SelectDelegate<Object, String>() {
+
 			@Override
 			public String exec(Object data) {
-				return data.toString();
+				if (null == data) {
+					return "";
+				} else {
+					return data.toString();
+				}
 			}
-		}).toArray();
+		}).toArray(new String[0]);
+
 		return fetchFirst(sql, texts, binder);
 	}
 
@@ -63,7 +69,5 @@ public class SqlDataContext {
 		}
 		return retList;
 	}
-
-	
 
 }

@@ -1,5 +1,6 @@
 package net.lxzhu.todaily.util;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -94,12 +95,12 @@ public class Linq<TElement> {
 		return new Linq<TElement>(retIterator);
 	}
 
-	public boolean any(final WhereDelegate<TElement> where) {		
+	public boolean any(final WhereDelegate<TElement> where) {
 		return false;
 	}
 
-	public TElement[] toArray() {
-		return this.toList().toArray(null);
+	public TElement[] toArray(TElement[] items) {
+		return this.toList().toArray(items);
 	}
 
 	public List<TElement> toList() {

@@ -76,6 +76,13 @@
                 android:hint="请输入任务的名称"
                 android:inputType="text"
                 android:singleLine="true" />
+            <TextView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="重要程度"/>
+            <Spinner android:id="@+id/activity_issue_detail_important_level"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />"
         </LinearLayout>
 
         <LinearLayout

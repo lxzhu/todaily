@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/activity_issue_detail_topbar"
+        style="@android:style/ButtonBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/activity_issue_detail_basic_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="基本" />
+
+        <Button
+            android:id="@+id/activity_issue_detail_description_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="描述" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/activity_issue_detail_bottombar"
+        style="@android:style/ButtonBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center" >
+
+        <ImageButton
+            android:id="@+id/activity_issue_detail_save_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/aves_yes_48"
+            android:text="保存" />
+
+        <ImageButton
+            android:id="@+id/activity_issue_detail_cancel_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/aves_no_48"
+            android:text="取消" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/activity_issue_detail_bottombar"
+        android:layout_below="@id/activity_issue_detail_topbar" >
+
+        <LinearLayout
+            android:id="@+id/activity_issue_detail_basic_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="名称:" />
+
+            <EditText
+                android:id="@+id/activity_issue_detail_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请输入任务的名称"
+                android:inputType="text"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/activity_issue_detail_description_frame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <EditText
+                android:id="@+id/activity_issue_detail_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left|top"
+                android:hint="请输入该任务的详细描述"
+                android:inputType="text"
+                android:minHeight="400dp"
+                android:minLines="10" />
+        </LinearLayout>
+    </FrameLayout>
+
+</RelativeLayout>

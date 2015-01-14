@@ -2,7 +2,7 @@ package net.lxzhu.todaily.dao;
 
 import java.util.Calendar;
 
-public class Issue {
+public class Issue implements SupportViewModelTags {
 	protected long id;
 	protected String title;
 	protected String description;
@@ -116,6 +116,15 @@ public class Issue {
 
 	public String toString() {
 		return this.getTitle();
+	}
+
+	private ViewModelTags mViewModelTags;
+
+	public ViewModelTags getExtraTags() {
+		if (mViewModelTags == null) {
+			mViewModelTags = new ViewModelTags();
+		}
+		return mViewModelTags;
 	}
 
 }

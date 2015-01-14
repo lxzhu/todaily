@@ -59,9 +59,10 @@ public class FragmentToday extends Fragment {
 		this.mIssueListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> listview, View itemView, int position, long id) {
-				itemView.setSelected(true);
+				//itemView.setSelected(true);
 			}
 		});
+		
 		return this.mFragmentView;
 
 	}

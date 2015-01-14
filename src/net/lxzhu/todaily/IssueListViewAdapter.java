@@ -22,7 +22,10 @@ public class IssueListViewAdapter extends ArrayAdapter<Issue> {
 			tag = new IssueListViewItemTag();
 			tag.attachToItemView(itemView);
 			Activity activity = (Activity) this.getContext();
-			tag.moreDetails.setOnClickListener(new IssueListViewItemEvents(activity, tag));
+
+			tag.onClickMoreDetails(new IssueListViewItemMoreDetailsClickEventHandler(activity, tag));
+			tag.onClickDeleteButton(new IssueListViewItemDeleteButtonClickEventHandler(activity, tag));
+			itemView.setOnTouchListener(new IssueListViewItemTouchEvents(tag));
 		} else {
 			tag = (IssueListViewItemTag) itemView.getTag();
 		}

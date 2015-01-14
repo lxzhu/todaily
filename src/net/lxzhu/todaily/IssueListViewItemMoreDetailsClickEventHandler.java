@@ -6,13 +6,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 
-public class IssueListViewItemEvents implements View.OnClickListener {
+public class IssueListViewItemMoreDetailsClickEventHandler implements View.OnClickListener {
 
 	protected IssueListViewItemTag itemViewTag;
 
 	protected Activity activity;
 
-	public IssueListViewItemEvents(Activity activity, IssueListViewItemTag itemViewTag) {
+	public IssueListViewItemMoreDetailsClickEventHandler(Activity activity, IssueListViewItemTag itemViewTag) {
 		this.activity = activity;
 		this.itemViewTag = itemViewTag;
 	}

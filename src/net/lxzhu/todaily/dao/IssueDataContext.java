@@ -35,6 +35,12 @@ public class IssueDataContext extends SqlDataContext {
 		return retIssueList;
 	}
 
+	public void delete(long id) {
+
+		this.sqlite.getWritableDatabase().delete(IssueScriptObject.TABLE_NAME, "_id=?",
+				new String[] { String.format("%d", id) });
+	}
+
 	class IssueDataBinder implements DataBinder<Issue> {
 
 		@Override

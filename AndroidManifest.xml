@@ -6,6 +6,9 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="15" />
     <uses-permission android:maxSdkVersion="15" android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"

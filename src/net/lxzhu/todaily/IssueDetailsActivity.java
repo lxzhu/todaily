@@ -9,6 +9,10 @@ import net.lxzhu.todaily.dao.Issue;
 import net.lxzhu.todaily.dao.IssueDataContext;
 import net.lxzhu.todaily.util.ToastUtil;
 import android.app.Activity;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -23,10 +27,11 @@ import android.widget.Toast;
  * @author RFIAS
  *
  */
-public class IssueDetailsActivity extends Activity {
+public class IssueDetailsActivity extends Activity implements LocationListener {
 
 	public static final String sExtraDataKeyIssueId = "issueid";
-
+	public static final int sGPSUpdateMinTime = 0;
+	public static final int sGPSUpdateMinDistance = 0;
 	protected View basicFrame;
 	protected View descriptionFrame;
 	protected Button basicButton;
@@ -36,11 +41,14 @@ public class IssueDetailsActivity extends Activity {
 	protected EditText titleText;
 	protected EditText descriptionText;
 	protected long issueId;
+	protected Location location;
 	protected Spinner importantLevelDropDownList;
+	protected LocationManager locationManager;
 
 	public void onCreate(Bundle savedInstanceState) {
 		this.setContentView(R.layout.activity_issue_detail);
 		super.onCreate(savedInstanceState);
+
 		this.findViews();
 		this.setupBasicButton();
 		this.setupDescriptionButton();
@@ -51,6 +59,11 @@ public class IssueDetailsActivity extends Activity {
 		this.getActionBar().setIcon(R.drawable.aves_arrow_left_48);
 		this.getActionBar().setTitle("任务详情");
 		this.bindIssueToUI();
+
+	}
+
+	protected void onDestroy() {
+		this.teardownLocationManager();
 	}
 
 	public IssueDetailsActivity getCurrentObject() {
@@ -185,7 +198,10 @@ public class IssueDetailsActivity extends Activity {
 
 	/**
 	 * collect value from ui elements and construct an issue object.
-	 * <p>this method does not store issue to database</p>
+	 * <p>
+	 * this method does not store issue to database
+	 * </p>
+	 * 
 	 * @return
 	 */
 	private Issue collectIssueData() {
@@ -197,6 +213,16 @@ public class IssueDetailsActivity extends Activity {
 			issue.setDescription(this.descriptionText.getText().toString());
 			DropDownItem level = (DropDownItem) this.importantLevelDropDownList.getSelectedItem();
 			issue.setImportantLevel(level.getValue());
+
+			if (this.location != null) {
+				net.lxzhu.todaily.dao.Location issueLocation = new net.lxzhu.todaily.dao.Location();
+				issueLocation.latitude = this.location.getLatitude();
+				issueLocation.longitude = this.location.getLongitude();
+				issueLocation.altitude = this.location.getAltitude();
+				issueLocation.speed = this.location.getSpeed();
+				issueLocation.time = this.location.getTime();
+				issue.setLocation(issueLocation);
+			}
 			retItem = issue;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -232,5 +258,39 @@ public class IssueDetailsActivity extends Activity {
 			ToastUtil.showText(getCurrentObject(), e.getLocalizedMessage());
 		}
 
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		this.location = location;
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		ToastUtil.showText(this, "GPS is required to get location the issue.");
+	}
+
+	protected void setupLocationManager() {
+		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, sGPSUpdateMinTime, sGPSUpdateMinDistance,
+				this);
+	}
+
+	protected void teardownLocationManager() {
+		if (this.locationManager != null) {
+			this.locationManager.removeUpdates(this);
+		}
 	}
 }

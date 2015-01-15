@@ -14,6 +14,7 @@ public class Issue implements SupportViewModelTags {
 	protected Calendar actualEndDateTime;
 	protected int StatusCode;
 	protected int ImportantLevel;
+	protected Location location;
 
 	public Issue() {
 		this.createDateTime = Calendar.getInstance();
@@ -112,6 +113,14 @@ public class Issue implements SupportViewModelTags {
 
 	public void setImportantLevel(int importantLevel) {
 		ImportantLevel = importantLevel;
+	}
+
+	public Location getLocation() {
+		return this.location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
 	public String toString() {

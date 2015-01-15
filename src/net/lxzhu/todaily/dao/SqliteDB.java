@@ -11,7 +11,7 @@ public class SqliteDB extends SQLiteOpenHelper {
 
 	protected static final String DATABASE_NAME = "todaily";
 	// the current database version
-	public static final int[] VERSION_HISTORY = new int[] { 20141224 };
+	public static final int[] VERSION_HISTORY = new int[] { 0,20141224, 20150115 };
 
 	public static int currentDatabaseVersion() {
 		int lastObjectIndex = VERSION_HISTORY.length - 1;
@@ -29,8 +29,7 @@ public class SqliteDB extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		for (Class scriptObjectClass : ScriptObjects) {
 			try {
-				ScriptObject script = (ScriptObject) scriptObjectClass
-						.newInstance();
+				ScriptObject script = (ScriptObject) scriptObjectClass.newInstance();
 				script.onCreate(db);
 			} catch (InstantiationException e) {
 				Log.e(SqliteDB.class.getName(), e.getLocalizedMessage());
@@ -44,8 +43,7 @@ public class SqliteDB extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		for (Class scriptObjectClass : ScriptObjects) {
 			try {
-				ScriptObject script = (ScriptObject) scriptObjectClass
-						.newInstance();
+				ScriptObject script = (ScriptObject) scriptObjectClass.newInstance();
 				script.onUpgrade(db, oldVersion, newVersion);
 			} catch (InstantiationException e) {
 				Log.e(SqliteDB.class.getName(), e.getLocalizedMessage());

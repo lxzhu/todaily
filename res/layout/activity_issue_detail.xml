@@ -58,32 +58,134 @@
         android:layout_above="@id/activity_issue_detail_bottombar"
         android:layout_below="@id/activity_issue_detail_topbar" >
 
-        <LinearLayout
+        <ScrollView
             android:id="@+id/activity_issue_detail_basic_frame"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="match_parent" >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="名称:" />
-
-            <EditText
-                android:id="@+id/activity_issue_detail_title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="请输入任务的名称"
-                android:inputType="text"
-                android:singleLine="true" />
-            <TextView android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="重要程度"/>
-            <Spinner android:id="@+id/activity_issue_detail_important_level"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />"
-        </LinearLayout>
+                android:orientation="vertical" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="名称:" />
+
+                <EditText
+                    android:id="@+id/activity_issue_detail_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="请输入任务的名称"
+                    android:inputType="text"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="重要程度" />
+
+                <Spinner
+                    android:id="@+id/activity_issue_detail_important_level"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <CheckBox
+                    android:id="@+id/activity_issue_detail_include_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="存储位置信息" />
+
+                <LinearLayout
+                    android:id="@+id/activity_issue_detail_location_panel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="经度:" />
+
+                        <TextView
+                            android:id="@+id/activity_issue_detail_location_latitude"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="116.99" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="纬度:" />
+
+                        <TextView
+                            android:id="@+id/activity_issue_detail_location_longitude"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="高度:" />
+
+                        <TextView
+                            android:id="@+id/activity_issue_detail_location_altitude"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="速度:" />
+
+                        <TextView
+                            android:id="@+id/activity_issue_detail_location_speed"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="时间:" />
+
+                        <TextView
+                            android:id="@+id/activity_issue_detail_location_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
 
         <LinearLayout
             android:id="@+id/activity_issue_detail_description_frame"

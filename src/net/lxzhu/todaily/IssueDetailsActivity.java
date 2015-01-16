@@ -14,13 +14,16 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -40,10 +43,19 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 	protected ImageButton cancelButton;
 	protected EditText titleText;
 	protected EditText descriptionText;
+	protected CheckBox includeLocationCheckBox;
+	protected View locationPanel;
+	protected TextView locationLatitudeTextView;
+	protected TextView locationLongitudeTextView;
+	protected TextView locationAltitudeTextView;
+	protected TextView locationSpeedTextView;
+	protected TextView locationTimeTextView;
+
 	protected long issueId;
-	protected Location location;
+	protected net.lxzhu.todaily.dao.Location location;
 	protected Spinner importantLevelDropDownList;
 	protected LocationManager locationManager;
+	protected Handler asyncHandler;
 
 	public void onCreate(Bundle savedInstanceState) {
 		this.setContentView(R.layout.activity_issue_detail);
@@ -59,6 +71,7 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 		this.getActionBar().setIcon(R.drawable.aves_arrow_left_48);
 		this.getActionBar().setTitle("任务详情");
 		this.bindIssueToUI();
+		this.setupLocationManager();
 
 	}
 
@@ -81,6 +94,15 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 			this.titleText = (EditText) this.findViewById(R.id.activity_issue_detail_title);
 			this.descriptionText = (EditText) this.findViewById(R.id.activity_issue_detail_description);
 			this.importantLevelDropDownList = (Spinner) this.findViewById(R.id.activity_issue_detail_important_level);
+
+			this.includeLocationCheckBox = (CheckBox) this.findViewById(R.id.activity_issue_detail_include_location);
+			this.locationPanel = this.findViewById(R.id.activity_issue_detail_location_panel);
+			this.locationLatitudeTextView = (TextView) this.findViewById(R.id.activity_issue_detail_location_latitude);
+			this.locationLongitudeTextView = (TextView) this
+					.findViewById(R.id.activity_issue_detail_location_longitude);
+			this.locationAltitudeTextView = (TextView) this.findViewById(R.id.activity_issue_detail_location_altitude);
+			this.locationSpeedTextView = (TextView) this.findViewById(R.id.activity_issue_detail_location_speed);
+			this.locationTimeTextView = (TextView) this.findViewById(R.id.activity_issue_detail_location_time);
 		} catch (Exception e) {
 			ToastUtil.showText(this, e.getLocalizedMessage());
 		}
@@ -214,14 +236,10 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 			DropDownItem level = (DropDownItem) this.importantLevelDropDownList.getSelectedItem();
 			issue.setImportantLevel(level.getValue());
 
-			if (this.location != null) {
-				net.lxzhu.todaily.dao.Location issueLocation = new net.lxzhu.todaily.dao.Location();
-				issueLocation.latitude = this.location.getLatitude();
-				issueLocation.longitude = this.location.getLongitude();
-				issueLocation.altitude = this.location.getAltitude();
-				issueLocation.speed = this.location.getSpeed();
-				issueLocation.time = this.location.getTime();
-				issue.setLocation(issueLocation);
+			if (!this.includeLocation()) {
+				issue.setLocation(new net.lxzhu.todaily.dao.Location());
+			} else if (this.location != null) {
+				issue.setLocation(this.location);
 			}
 			retItem = issue;
 		} catch (Exception e) {
@@ -230,6 +248,10 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 		}
 
 		return retItem;
+	}
+
+	protected boolean includeLocation() {
+		return this.includeLocationCheckBox.isChecked();
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -261,8 +283,15 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 	}
 
 	@Override
-	public void onLocationChanged(Location location) {
-		this.location = location;
+	public void onLocationChanged(Location lastLocation) {
+		if (lastLocation != null) {
+			if (this.location == null) {
+				this.location = new net.lxzhu.todaily.dao.Location();
+			}
+			this.location.latitude = lastLocation.getLatitude();
+			this.location.longitude = lastLocation.getLongitude();
+			this.updateLocationOnUI();
+		}
 	}
 
 	@Override
@@ -283,14 +312,34 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 	}
 
 	protected void setupLocationManager() {
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, sGPSUpdateMinTime, sGPSUpdateMinDistance,
-				this);
+		try {
+			locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+			if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, sGPSUpdateMinTime,
+						sGPSUpdateMinDistance, this);
+				Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+				this.onLocationChanged(lastLocation);
+			} else {
+				ToastUtil.showText(this, "GPS is not enabled");
+			}
+		} catch (Exception e) {
+			ToastUtil.showText(this, e.getLocalizedMessage());
+			e.printStackTrace();
+		}
 	}
 
 	protected void teardownLocationManager() {
 		if (this.locationManager != null) {
 			this.locationManager.removeUpdates(this);
+		}
+	}
+
+	protected void updateLocationOnUI() {
+		if (this.location != null) {
+			String latitude = String.format("%f", this.location.latitude);
+			String longitude = String.format("%f", this.location.longitude);
+			this.locationLatitudeTextView.setText(latitude);
+			this.locationLongitudeTextView.setText(longitude);
 		}
 	}
 }

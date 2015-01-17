@@ -25,22 +25,21 @@ public class IssueDataContext extends SqlDataContext {
 	public Issue find(long id) {
 		String sql = "select _id as c0, title as c1, description as c2, important_level as c3, create_date_time as c4,"
 				+ " location_latitude as c5, location_longitude as c6, location_altitude as c7, location_speed as c8,"
-				+ " location_time as c9, location_street as c10 from " + IssueScriptObject.TABLE_NAME + " where _id=?";
+				+ " location_time as c9, location_street as c10 from issue where _id=?";
 		return this.fetchFirst(sql, new Object[] { id }, new IssueDataBinder());
 	}
 
 	public List<Issue> getIssue() {
 		String sql = "select _id as c0, title as c1, description as c2, important_level as c3, create_date_time as c4,"
 				+ " location_latitude as c5, location_longitude as c6, location_altitude as c7, location_speed as c8,"
-				+ " location_time as c9, location_street as c10 from "
-				+ IssueScriptObject.TABLE_NAME;
+				+ " location_time as c9, location_street as c10 from issue";
 		List<Issue> retIssueList = this.fetchList(sql, null, new IssueDataBinder());
 		return retIssueList;
 	}
 
 	public void delete(long id) {
 
-		this.sqlite.getWritableDatabase().delete(IssueScriptObject.TABLE_NAME, "_id=?",
+		this.sqlite.getWritableDatabase().delete("issue", "_id=?",
 				new String[] { String.format("%d", id) });
 	}
 
@@ -84,7 +83,7 @@ public class IssueDataContext extends SqlDataContext {
 				location = new Location();
 			}
 
-			String sql = "insert into " + IssueScriptObject.TABLE_NAME
+			String sql = "insert into issue"
 					+ "(title,description,important_level,create_date_time,location_latitude,location_longitude,"
 					+ " location_altitude,location_speed,location_time,location_street)"
 					+ "values (?,?,?,?,?,?,?,?,?,?)";
@@ -110,7 +109,7 @@ public class IssueDataContext extends SqlDataContext {
 				location = new Location();
 			}
 			issue.setUpdateDateTime(Calendar.getInstance());
-			String sql = "update " + IssueScriptObject.TABLE_NAME + " set title=?,description=?,"
+			String sql = "update issue set title=?,description=?,"
 					+ " important_level=?, update_date_time=?, location_latitude=?, location_longitude=?,"
 					+ " location_altitude=?, location_speed=?, location_time=? ,location_street=?" + " where _id=?";
 

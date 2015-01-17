@@ -12,9 +12,10 @@ import android.database.Cursor;
 public class SqlDataContext {
 	protected Context context;
 	protected SqliteDB sqlite;
-
+	
 	public SqlDataContext(Context context) {
 		this.context = context;
+		SqliteDB.loadSqlScripts(context);
 		this.sqlite = new SqliteDB(this.context);
 	}
 

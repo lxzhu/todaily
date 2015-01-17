@@ -1,56 +1,96 @@
 package net.lxzhu.todaily.dao;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import net.lxzhu.todaily.util.ArrayUtil;
+import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
-@SuppressWarnings("rawtypes")
 public class SqliteDB extends SQLiteOpenHelper {
-
 	protected static final String DATABASE_NAME = "todaily";
 	// the current database version
-	public static final int[] VERSION_HISTORY = new int[] { 0,20141224, 20150115 };
+	protected static String[] sScriptFileList;
+	protected static int[] sVersionList;
+	protected static Object sLock = new Object();
+	protected Context context;
 
 	public static int currentDatabaseVersion() {
-		int lastObjectIndex = VERSION_HISTORY.length - 1;
-		return VERSION_HISTORY[lastObjectIndex];
+		int size = sVersionList.length;
+		return sVersionList[size - 1];
 	}
-
-	protected static Class[] ScriptObjects = new Class[] { IssueScriptObject.class };
 
 	public SqliteDB(Context context) {
 		super(context, DATABASE_NAME, null, currentDatabaseVersion());
-		// TODO Auto-generated constructor stub
+		this.context = context;
+	}
+
+	public static void loadSqlScripts(Context context) {
+		if (null == sVersionList) {
+			synchronized (sLock) {
+				if (null == sVersionList) {
+					loadSqlScripts0(context);
+				}
+			}
+		}
+	}
+
+	protected static void loadSqlScripts0(Context context) {
+		try {
+			sScriptFileList = context.getAssets().list("database");
+			Arrays.sort(sScriptFileList);
+			sVersionList = new int[sScriptFileList.length];
+			for (int index = 0; index < sScriptFileList.length; index++) {
+				String version = sScriptFileList[index].substring(2, 10);
+				sVersionList[index] = Integer.valueOf(version);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		for (Class scriptObjectClass : ScriptObjects) {
-			try {
-				ScriptObject script = (ScriptObject) scriptObjectClass.newInstance();
-				script.onCreate(db);
-			} catch (InstantiationException e) {
-				Log.e(SqliteDB.class.getName(), e.getLocalizedMessage());
-			} catch (IllegalAccessException e) {
-				Log.e(SqliteDB.class.getName(), e.getLocalizedMessage());
-			}
-		}
+		onUpgrade(db, 0, currentDatabaseVersion());
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		for (Class scriptObjectClass : ScriptObjects) {
-			try {
-				ScriptObject script = (ScriptObject) scriptObjectClass.newInstance();
-				script.onUpgrade(db, oldVersion, newVersion);
-			} catch (InstantiationException e) {
-				Log.e(SqliteDB.class.getName(), e.getLocalizedMessage());
-			} catch (IllegalAccessException e) {
-				Log.e(SqliteDB.class.getName(), e.getLocalizedMessage());
-			}
+		int fromIndex = (oldVersion == 0) ? -1 : ArrayUtil.indexOf(sVersionList, oldVersion);
+		int toIndex = ArrayUtil.indexOf(sVersionList, newVersion);
+		for (int index = fromIndex + 1; index <= toIndex; index++) {
+			String file = sScriptFileList[index];
+			execScriptFile(db, file);
 		}
 	}
 
+	protected void execScriptFile(SQLiteDatabase db, String fileName) {
+		InputStream is = null;
+		try {
+			is = this.context.getAssets().open("database/" + fileName);
+			SqlScriptReader reader = new SqlScriptReader(is);
+			while (reader.next()) {
+				String sql = reader.current();
+				db.execSQL(sql);
+			}
+			is.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+			if(is!=null){
+				try {
+					is.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }

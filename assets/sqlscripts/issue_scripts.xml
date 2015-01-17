@@ -1,15 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scripts>
-
-    <script name="get_issue_list" >
-
-        <sql>
-<![CDATA[
-select * 
-from 
-issue
-]]>
-        </sql>
-    </script>
-
-</scripts>

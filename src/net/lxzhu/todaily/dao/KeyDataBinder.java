@@ -1,18 +1,28 @@
 package net.lxzhu.todaily.dao;
 
 import android.database.Cursor;
-import net.lxzhu.todaily.dao.DataBinder;
 
-public class KeyDataBinder implements DataBinder<Long> {
+public class KeyDataBinder extends DataBinderBase<Long> {
 
+	protected String keyColumnName;
 	protected int keyColumnIndex;
 
-	public KeyDataBinder() {
-		this(0);
+	public KeyDataBinder(String tableAlaisName, String keyColumnName) {
+		super(tableAlaisName);
+		this.keyColumnName = keyColumnName;
 	}
 
-	public KeyDataBinder(int keyColumnIndex) {
-		this.keyColumnIndex = keyColumnIndex;
+	public KeyDataBinder(String keyColumnName) {
+		this("", keyColumnName);
+	}
+
+	public KeyDataBinder() {
+		this("", "_id");
+	}
+
+	public void init(Cursor cursor) {
+		super.init(cursor);
+		this.keyColumnIndex = this.getColumnIndex(this.keyColumnName);
 	}
 
 	@Override

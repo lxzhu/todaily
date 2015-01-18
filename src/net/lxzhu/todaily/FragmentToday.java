@@ -2,6 +2,7 @@ package net.lxzhu.todaily;
 
 import java.util.List;
 
+import net.lxzhu.todaily.adapter.IssueListViewAdapter;
 import net.lxzhu.todaily.dao.Issue;
 import net.lxzhu.todaily.dao.IssueDataContext;
 import net.lxzhu.todaily.util.RequestCodes;
@@ -69,7 +70,7 @@ public class FragmentToday extends Fragment {
 
 	protected void reloadIssues() {
 		IssueDataContext dc = new IssueDataContext(getActivity());
-		List<Issue> issueList = dc.getIssue();
+		List<Issue> issueList = dc.getIssueList();
 		this.mIssueListViewAdapter.clear();
 		this.mIssueListViewAdapter.addAll(issueList);
 		this.mIssueListViewAdapter.notifyDataSetChanged();

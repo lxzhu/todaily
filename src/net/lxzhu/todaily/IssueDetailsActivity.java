@@ -5,15 +5,20 @@ package net.lxzhu.todaily;
 
 import java.util.ArrayList;
 
+import net.lxzhu.todaily.adapter.DropDownListAdapter;
 import net.lxzhu.todaily.dao.Issue;
 import net.lxzhu.todaily.dao.IssueDataContext;
+import net.lxzhu.todaily.dto.DropDownItem;
+import net.lxzhu.todaily.dto.DropDownItemBase;
 import net.lxzhu.todaily.util.ToastUtil;
 import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.AudioTrack;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -37,8 +42,10 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 	public static final int sGPSUpdateMinDistance = 0;
 	protected View basicFrame;
 	protected View descriptionFrame;
+	protected View slimFrame;
 	protected Button basicButton;
 	protected Button descriptionButton;
+	protected Button slimFrameButton;
 	protected ImageButton saveButton;
 	protected ImageButton cancelButton;
 	protected EditText titleText;
@@ -51,12 +58,14 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 	protected TextView locationSpeedTextView;
 	protected TextView locationTimeTextView;
 
+	protected Button audioButton;
 	protected long issueId;
 	protected net.lxzhu.todaily.dao.Location location;
 	protected Spinner importantLevelDropDownList;
 	protected LocationManager locationManager;
 	protected Handler asyncHandler;
 
+	protected AudioRecordingUtil audioRecording;
 	public void onCreate(Bundle savedInstanceState) {
 		this.setContentView(R.layout.activity_issue_detail);
 		super.onCreate(savedInstanceState);
@@ -67,12 +76,13 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 		this.setupImportantLevels();
 		this.setupSaveButton();
 		this.setupCancelButton();
+		this.setupSlimButton();
 		this.getActionBar().setHomeButtonEnabled(true);
 		this.getActionBar().setIcon(R.drawable.aves_arrow_left_48);
 		this.getActionBar().setTitle("任务详情");
 		this.bindIssueToUI();
 		this.setupLocationManager();
-
+		this.audioRecording=new AudioRecordingUtil(this);
 	}
 
 	protected void onDestroy() {
@@ -87,8 +97,12 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 		try {
 			this.basicFrame = this.findViewById(R.id.activity_issue_detail_basic_frame);
 			this.descriptionFrame = this.findViewById(R.id.activity_issue_detail_description_frame);
+			this.slimFrame = this.findViewById(R.id.activity_issue_detail_slim_frame);
+
 			this.basicButton = (Button) this.findViewById(R.id.activity_issue_detail_basic_button);
 			this.descriptionButton = (Button) this.findViewById(R.id.activity_issue_detail_description_button);
+			this.slimFrameButton = (Button) this.findViewById(R.id.activity_issue_detail_slim_button);
+
 			this.saveButton = (ImageButton) this.findViewById(R.id.activity_issue_detail_save_button);
 			this.cancelButton = (ImageButton) this.findViewById(R.id.activity_issue_detail_cancel_button);
 			this.titleText = (EditText) this.findViewById(R.id.activity_issue_detail_title);
@@ -103,6 +117,9 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 			this.locationAltitudeTextView = (TextView) this.findViewById(R.id.activity_issue_detail_location_altitude);
 			this.locationSpeedTextView = (TextView) this.findViewById(R.id.activity_issue_detail_location_speed);
 			this.locationTimeTextView = (TextView) this.findViewById(R.id.activity_issue_detail_location_time);
+			
+			this.audioButton=(Button) this.findViewById(R.id.activity_issue_detial_slim_add_audio);
+			
 		} catch (Exception e) {
 			ToastUtil.showText(this, e.getLocalizedMessage());
 		}
@@ -113,9 +130,9 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 			@Override
 			public void onClick(View v) {
 				try {
-					// TODO Auto-generated method stub
 					basicFrame.setVisibility(View.VISIBLE);
 					descriptionFrame.setVisibility(View.GONE);
+					slimFrame.setVisibility(View.GONE);
 				} catch (Exception e) {
 					e.printStackTrace();
 					ToastUtil.showText(getCurrentObject(), e.getLocalizedMessage());
@@ -132,6 +149,7 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 				try {
 					// TODO Auto-generated method stub
 					basicFrame.setVisibility(View.GONE);
+					slimFrame.setVisibility(View.GONE);
 					descriptionFrame.setVisibility(View.VISIBLE);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -141,6 +159,39 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 		});
 	}
 
+	private void setupSlimButton() {
+		this.slimFrameButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				try {
+					basicFrame.setVisibility(View.GONE);
+					slimFrame.setVisibility(View.VISIBLE);
+					descriptionFrame.setVisibility(View.GONE);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	private void setupSlimAddAudioButton(){
+		this.audioButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				onAudioButtonClicked();
+			}
+		});
+	}
+	private void onAudioButtonClicked(){
+		if(this.audioRecording.isRecording()){
+			this.audioRecording.stop();
+			this.audioRecording.replay();
+		}else{
+			this.audioRecording.start(Environment.getDataDirectory()+"/mytest.wav");
+		}
+	}
 	private void setupSaveButton() {
 		final IssueDetailsActivity that = this;
 		this.saveButton.setOnClickListener(new View.OnClickListener() {
@@ -155,7 +206,7 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 					} else {
 						Issue issue = collectIssueData();
 						IssueDataContext dc = new IssueDataContext(getBaseContext());
-						dc.save(issue);
+						dc.saveIssue(issue);
 						that.setResult(RESULT_OK);
 						that.finish();
 					}
@@ -192,7 +243,7 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 			if (extraBundle != null && extraBundle.containsKey(sExtraDataKeyIssueId)) {
 				long issueId = extraBundle.getLong(sExtraDataKeyIssueId);
 				IssueDataContext dc = new IssueDataContext(this.getApplicationContext());
-				Issue issue = dc.find(issueId);
+				Issue issue = dc.findIssue(issueId);
 				if (issue == null) {
 					ToastUtil.showText(this, "failed to load specified issue");
 					this.finish();
@@ -288,8 +339,8 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 			if (this.location == null) {
 				this.location = new net.lxzhu.todaily.dao.Location();
 			}
-			this.location.latitude = lastLocation.getLatitude();
-			this.location.longitude = lastLocation.getLongitude();
+			this.location.setLatitude(lastLocation.getLatitude());
+			this.location.setLongitude(lastLocation.getLongitude());
 			this.updateLocationOnUI();
 		}
 	}
@@ -336,8 +387,8 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 
 	protected void updateLocationOnUI() {
 		if (this.location != null) {
-			String latitude = String.format("%f", this.location.latitude);
-			String longitude = String.format("%f", this.location.longitude);
+			String latitude = String.format("%f", this.location.getLatitude());
+			String longitude = String.format("%f", this.location.getLongitude());
 			this.locationLatitudeTextView.setText(latitude);
 			this.locationLongitudeTextView.setText(longitude);
 		}

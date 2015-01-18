@@ -1,5 +1,7 @@
-package net.lxzhu.todaily;
+package net.lxzhu.todaily.adapter;
 
+import net.lxzhu.todaily.R;
+import net.lxzhu.todaily.R.id;
 import net.lxzhu.todaily.dao.Issue;
 import net.lxzhu.todaily.dao.IssueDataContext;
 import net.lxzhu.todaily.util.Padding;
@@ -117,7 +119,7 @@ public class IssueListViewItemTag {
 	public void delete() {
 		Issue item = this.getItem();
 		IssueDataContext dc = new IssueDataContext(this.getContext());
-		dc.delete(item.getId());
+		dc.deleteIssue(item.getId());
 		this.adapter.remove(item);
 	}
 }

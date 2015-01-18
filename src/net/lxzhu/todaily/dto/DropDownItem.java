@@ -1,4 +1,4 @@
-package net.lxzhu.todaily;
+package net.lxzhu.todaily.dto;
 
 public interface DropDownItem {
 	int getValue();

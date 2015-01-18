@@ -12,7 +12,7 @@ import android.database.Cursor;
 public class SqlDataContext {
 	protected Context context;
 	protected SqliteDB sqlite;
-	
+
 	public SqlDataContext(Context context) {
 		this.context = context;
 		SqliteDB.loadSqlScripts(context);
@@ -39,6 +39,7 @@ public class SqlDataContext {
 	protected <T> T fetchFirst(String sql, String[] args, DataBinder<T> binder) {
 		T retObject = null;
 		Cursor cursor = this.sqlite.getReadableDatabase().rawQuery(sql, args);
+		binder.init(cursor);
 		cursor.moveToFirst();
 		if (!cursor.isAfterLast()) {
 			try {
@@ -55,6 +56,7 @@ public class SqlDataContext {
 	protected <T> List<T> fetchList(String sql, String[] args, DataBinder<T> binder) {
 		List<T> retList = new ArrayList<T>();
 		Cursor cursor = this.sqlite.getReadableDatabase().rawQuery(sql, args);
+		binder.init(cursor);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			try {
@@ -71,4 +73,66 @@ public class SqlDataContext {
 		return retList;
 	}
 
+	protected long fetchFirstLong(String sql, Object[] args) {
+		return fetchFirst(sql, args, new DataBinder<Long>() {
+
+			@Override
+			public void init(Cursor cursor) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public Long getDataObject(Cursor cursor) {
+				return cursor.getLong(0);
+			}
+
+		});
+	}
+
+	protected double fetchFirstDouble(String sql, Object[] args) {
+		return fetchFirst(sql, args, new DataBinder<Double>() {
+
+			@Override
+			public void init(Cursor cursor) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public Double getDataObject(Cursor cursor) {
+				return cursor.getDouble(0);
+			}
+		});
+	}
+
+	protected byte[] fetchFirstBlob(String sql, Object[] args) {
+		return fetchFirst(sql, args, new DataBinder<byte[]>() {
+			@Override
+			public void init(Cursor cursor) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public byte[] getDataObject(Cursor cursor) {
+				return cursor.getBlob(0);
+			}
+		});
+	}
+
+	protected String fetchFirstString(String sql, Object[] args) {
+		return fetchFirst(sql, args, new DataBinder<String>() {
+			@Override
+			public void init(Cursor cursor) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public String getDataObject(Cursor cursor) {
+				return cursor.getString(0);
+			}
+		});
+	}
 }

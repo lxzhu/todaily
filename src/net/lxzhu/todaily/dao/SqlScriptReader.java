@@ -25,13 +25,17 @@ public class SqlScriptReader {
 			while (null != line) {
 				if (line.equalsIgnoreCase("GO")) {
 					break;
-				} else{
-					int index=line.lastIndexOf(";");
-					String ending=line.substring(index).trim();
-					if(ending.equalsIgnoreCase(";GO")){
-						this.buffer.append(line.substring(0,index));
-						break;
-					}else{
+				} else {
+					int index = line.lastIndexOf(";");
+					if (index >= 0) {
+						String ending = line.substring(index).trim();
+						if (ending.equalsIgnoreCase(";GO")) {
+							this.buffer.append(line.substring(0, index));
+							break;
+						} else {
+							this.buffer.append(line);
+						}
+					} else {
 						this.buffer.append(line);
 					}
 				}

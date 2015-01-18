@@ -1,7 +1,8 @@
-package net.lxzhu.todaily;
+package net.lxzhu.todaily.adapter;
 
 import java.util.List;
 
+import net.lxzhu.todaily.dto.DropDownItem;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;

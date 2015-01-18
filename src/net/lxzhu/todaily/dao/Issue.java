@@ -123,6 +123,14 @@ public class Issue implements SupportViewModelTags {
 		this.location = location;
 	}
 
+	protected boolean hasLocation() {
+		if (this.location == null)
+			return false;
+		else {
+			return this.location.longitude != 0 && this.location.latitude != 0;
+		}
+	}
+
 	public String toString() {
 		return this.getTitle();
 	}

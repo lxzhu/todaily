@@ -1,5 +1,6 @@
-package net.lxzhu.todaily;
+package net.lxzhu.todaily.adapter;
 
+import net.lxzhu.todaily.IssueDetailsActivity;
 import net.lxzhu.todaily.dao.Issue;
 import net.lxzhu.todaily.util.RequestCodes;
 import android.app.Activity;

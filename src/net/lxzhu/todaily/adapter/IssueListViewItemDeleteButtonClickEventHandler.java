@@ -1,4 +1,4 @@
-package net.lxzhu.todaily;
+package net.lxzhu.todaily.adapter;
 
 import android.app.Activity;
 import android.view.*;

@@ -1,5 +1,7 @@
-package net.lxzhu.todaily;
+package net.lxzhu.todaily.adapter;
 
+import net.lxzhu.todaily.R;
+import net.lxzhu.todaily.R.layout;
 import net.lxzhu.todaily.dao.Issue;
 import android.app.Activity;
 import android.content.Context;

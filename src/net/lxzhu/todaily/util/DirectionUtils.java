@@ -1,4 +1,4 @@
-package net.lxzhu.todaily;
+package net.lxzhu.todaily.util;
 
 public class DirectionUtils {
 	protected static final double sPI_OVER8 = Math.PI / 8;

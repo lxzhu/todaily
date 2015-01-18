@@ -25,6 +25,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="描述" />
+
+        <Button
+            android:id="@+id/activity_issue_detail_slim_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间片" />
     </LinearLayout>
 
     <LinearLayout
@@ -204,6 +211,60 @@
                 android:minHeight="400dp"
                 android:minLines="10" />
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/activity_issue_detail_slim_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" >
+
+            <LinearLayout
+                android:id="@+id/activity_issue_detail_slim_top_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/activity_issue_detial_slim_add_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="文本" >
+                </Button>
+
+                <Button
+                    android:id="@+id/activity_issue_detial_slim_add_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="图片" >
+                </Button>
+
+                <Button
+                    android:id="@+id/activity_issue_detial_slim_add_audio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="录音" >
+                </Button>
+
+                <Button
+                    android:id="@+id/activity_issue_detial_slim_add_vedio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="视频" >
+                </Button>
+            </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignTop="@id/activity_issue_detail_slim_top_buttons" >
+            </ScrollView>
+        </RelativeLayout>
     </FrameLayout>
 
 </RelativeLayout>

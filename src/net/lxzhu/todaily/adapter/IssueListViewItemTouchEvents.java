@@ -1,5 +1,6 @@
-package net.lxzhu.todaily;
+package net.lxzhu.todaily.adapter;
 
+import net.lxzhu.todaily.util.DirectionUtils;
 import net.lxzhu.todaily.util.ToastUtil;
 import android.annotation.SuppressLint;
 import android.app.Activity;

@@ -19,7 +19,7 @@ public class IssueDataContext extends SqlDataContext {
 		if (issue.getId() <= 0) {
 			insertIssue(issue);
 		} else {
-			insertIssue(issue);
+			updateIssue(issue);
 		}
 	}
 
@@ -88,7 +88,7 @@ public class IssueDataContext extends SqlDataContext {
 			cv.put("important_level", issue.getImportantLevel());
 			cv.put("update_datetime", DateTimeUtil.format(issue.getUpdateDateTime()));
 			cv.put("location_id", locationId);
-			this.sqlite.getWritableDatabase().update("location", cv, "_id=?",
+			this.sqlite.getWritableDatabase().update("issue", cv, "_id=?",
 					new String[] { String.valueOf(issue.getId()) });
 
 		} catch (Exception ex) {

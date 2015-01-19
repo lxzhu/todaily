@@ -87,6 +87,7 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 
 	protected void onDestroy() {
 		this.teardownLocationManager();
+		super.onDestroy();
 	}
 
 	public IssueDetailsActivity getCurrentObject() {

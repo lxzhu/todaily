@@ -6,13 +6,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+import net.lxzhu.todaily.util.ToastUtil;
 import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaRecorder;
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -35,31 +39,64 @@ public class AudioRecordingUtil {
 	private String wavAudioDataFilePath;
 	protected Context context;
 	protected FileOutputStream fileStream;
-
+	protected Handler uiMessageHandle;
+	
 	public AudioRecordingUtil(Context context) {
 		this.context = context;
+		this.setupMessageHandle();
 	}
 
 	public void start(String wavAudioDataFilePath) {
-		rawAudioDataFilePath = Environment.getDataDirectory().getAbsolutePath() + "/" + UUID.randomUUID().toString();
-		this.wavAudioDataFilePath = wavAudioDataFilePath;
-		this.bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat);
-		this.audioRecord = new AudioRecord(audioSource, audioSource, audioSource, audioSource, audioSource);
-		this.audioRecord.startRecording();
-		this.isRecording = true;
-		new Thread(new AudioDataReaderThread()).start();
+		try {
+			rawAudioDataFilePath = Environment.getDataDirectory().getAbsolutePath() + "/"
+					+ UUID.randomUUID().toString();
+			this.wavAudioDataFilePath = wavAudioDataFilePath;
+			this.bufferSizeInBytes = AudioRecord.getMinBufferSize(sampleRateInHz, channelConfig, audioFormat);
+			this.audioRecord = new AudioRecord(audioSource, sampleRateInHz, channelConfig, audioFormat, bufferSizeInBytes);
+			
+			this.audioRecord.startRecording();
+			this.isRecording = true;
+			new Thread(new AudioDataReaderThread()).start();
+		} catch (Exception e) {
+			this.stop();
+			ToastUtil.showText(this.context, e.getLocalizedMessage());
+		}
+	}
+
+	protected void setupMessageHandle(){
+		this.uiMessageHandle=new Handler(new Handler.Callback() {			
+			@Override
+			public boolean handleMessage(Message message) {
+				Bundle bundle=message.getData();
+				if(bundle!=null){
+					String messageText=bundle.getString("message_text");
+					if(messageText!=null){
+						ToastUtil.showText(context, messageText);
+					}
+				}
+				return false;
+			}
+		});
+		
 	}
 
 	class AudioDataReaderThread implements Runnable {
-
 		@Override
 		public void run() {
-			openFileStream();
-			while (isRecording) {
-				readDataFromMIC();
+			try {
+				openFileStream();
+				while (isRecording) {
+					readDataFromMIC();
+				}
+				closeFileStream();
+				makeWavFile();
+			} catch (Exception e) {
+				Message message=new Message();
+				Bundle data=new Bundle();
+				data.putString("message_text", e.getLocalizedMessage());
+				message.setData(data);
+				uiMessageHandle.sendMessage(message);
 			}
-			closeFileStream();
-			makeWavFile();
 		}
 
 	}
@@ -187,6 +224,7 @@ public class AudioRecordingUtil {
 	public void stop() {
 		isRecording = false;
 		this.audioRecord.stop();
+		this.audioRecord.release();
 
 	}
 
@@ -195,18 +233,18 @@ public class AudioRecordingUtil {
 	}
 
 	public void replay() {
-		final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRateInHz, channelConfig, audioFormat,
-				bufferSizeInBytes, AudioTrack.MODE_STREAM);
-		new Thread(new Runnable(){
+		final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, sampleRateInHz, channelConfig,
+				audioFormat, bufferSizeInBytes, AudioTrack.MODE_STREAM);
+		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
 				audioTrack.play();
 			}
-			
+
 		}).start();
-		
+
 	}
 
 }

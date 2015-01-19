@@ -66,6 +66,7 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 	protected Handler asyncHandler;
 
 	protected AudioRecordingUtil audioRecording;
+
 	public void onCreate(Bundle savedInstanceState) {
 		this.setContentView(R.layout.activity_issue_detail);
 		super.onCreate(savedInstanceState);
@@ -82,7 +83,8 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 		this.getActionBar().setTitle("任务详情");
 		this.bindIssueToUI();
 		this.setupLocationManager();
-		this.audioRecording=new AudioRecordingUtil(this);
+
+		this.setupSlimAddAudioButton();
 	}
 
 	protected void onDestroy() {
@@ -118,9 +120,9 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 			this.locationAltitudeTextView = (TextView) this.findViewById(R.id.activity_issue_detail_location_altitude);
 			this.locationSpeedTextView = (TextView) this.findViewById(R.id.activity_issue_detail_location_speed);
 			this.locationTimeTextView = (TextView) this.findViewById(R.id.activity_issue_detail_location_time);
-			
-			this.audioButton=(Button) this.findViewById(R.id.activity_issue_detial_slim_add_audio);
-			
+
+			this.audioButton = (Button) this.findViewById(R.id.activity_issue_detial_slim_add_audio);
+
 		} catch (Exception e) {
 			ToastUtil.showText(this, e.getLocalizedMessage());
 		}
@@ -176,23 +178,26 @@ public class IssueDetailsActivity extends Activity implements LocationListener {
 		});
 	}
 
-	private void setupSlimAddAudioButton(){
+	private void setupSlimAddAudioButton() {
+		this.audioRecording = new AudioRecordingUtil(this);
 		this.audioButton.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				onAudioButtonClicked();
 			}
 		});
 	}
-	private void onAudioButtonClicked(){
-		if(this.audioRecording.isRecording()){
+
+	private void onAudioButtonClicked() {
+		if (this.audioRecording.isRecording()) {
 			this.audioRecording.stop();
 			this.audioRecording.replay();
-		}else{
-			this.audioRecording.start(Environment.getDataDirectory()+"/mytest.wav");
+		} else {
+			this.audioRecording.start(Environment.getDataDirectory() + "/mytest.wav");
 		}
 	}
+
 	private void setupSaveButton() {
 		final IssueDetailsActivity that = this;
 		this.saveButton.setOnClickListener(new View.OnClickListener() {

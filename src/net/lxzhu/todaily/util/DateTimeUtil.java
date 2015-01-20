@@ -51,4 +51,5 @@ public class DateTimeUtil {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 		return format.format(date);
 	}
+	
 }

@@ -226,7 +226,7 @@
                 android:orientation="horizontal" >
 
                 <Button
-                    android:id="@+id/activity_issue_detial_slim_add_text"
+                    android:id="@+id/activity_issue_detail_slim_add_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -234,7 +234,7 @@
                 </Button>
 
                 <Button
-                    android:id="@+id/activity_issue_detial_slim_add_image"
+                    android:id="@+id/activity_issue_detail_slim_add_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -242,7 +242,7 @@
                 </Button>
 
                 <Button
-                    android:id="@+id/activity_issue_detial_slim_add_audio"
+                    android:id="@+id/activity_issue_detail_slim_add_audio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -250,7 +250,7 @@
                 </Button>
 
                 <Button
-                    android:id="@+id/activity_issue_detial_slim_add_vedio"
+                    android:id="@+id/activity_issue_detail_slim_add_vedio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

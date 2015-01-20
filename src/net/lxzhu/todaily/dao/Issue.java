@@ -127,7 +127,7 @@ public class Issue implements SupportViewModelTags {
 		if (this.location == null)
 			return false;
 		else {
-			return this.location.longitude != 0 && this.location.latitude != 0;
+			return this.location.getLongitude() != 0 && this.location.getLatitude() != 0;
 		}
 	}
 

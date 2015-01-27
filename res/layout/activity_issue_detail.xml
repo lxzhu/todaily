@@ -116,13 +116,13 @@
                         android:orientation="horizontal" >
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="经度:" />
 
                         <TextView
                             android:id="@+id/activity_issue_detail_location_latitude"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="116.99" />
                     </LinearLayout>
@@ -133,13 +133,13 @@
                         android:orientation="horizontal" >
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="纬度:" />
 
                         <TextView
                             android:id="@+id/activity_issue_detail_location_longitude"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
 
@@ -149,13 +149,13 @@
                         android:orientation="horizontal" >
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="高度:" />
 
                         <TextView
                             android:id="@+id/activity_issue_detail_location_altitude"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
 
@@ -165,13 +165,13 @@
                         android:orientation="horizontal" >
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="速度:" />
 
                         <TextView
                             android:id="@+id/activity_issue_detail_location_speed"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
 
@@ -181,13 +181,13 @@
                         android:orientation="horizontal" >
 
                         <TextView
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="时间:" />
 
                         <TextView
                             android:id="@+id/activity_issue_detail_location_time"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                 </LinearLayout>

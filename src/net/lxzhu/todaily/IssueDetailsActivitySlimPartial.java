@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-public class IssueDetailsActivitySlimPartial implements PartialActivity {
+public class IssueDetailsActivitySlimPartial implements ActivityExtension {
 	protected Activity activity;
 	protected View slimFrame;
 	protected Button addAudioSlimButton;
